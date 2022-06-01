@@ -1,6 +1,6 @@
 """Add additional elements for loading sunpath in Rhino."""
 import streamlit as st
-
+import uuid
 from ladybug.color import Color
 from ladybug.compass import Compass
 from ladybug.sunpath import Sunpath
@@ -20,9 +20,10 @@ def _add_color(geometries, hex_color):
 def add_rhino_controls(sunpath: Sunpath, radius: int, north_angle: float):
     """Add Sunpath controls in Rhino."""
     # layout
-    st.sidebar.markdown('### Rhino controls')
 
-    col1, col2, col3 = st.sidebar.columns(3)
+    st.markdown('---')
+
+    col1, col2, col3 = st.columns(3)
 
     # create the compass
     co = Compass(radius=radius, north_angle=north_angle, spacing_factor=0.15)
@@ -78,17 +79,25 @@ def add_rhino_controls(sunpath: Sunpath, radius: int, north_angle: float):
     geometries = polylines_dicts + arcs_dicts + circles_dicts + \
         ticks_dicts + altitude_circ_dicts + suns_dicts
 
-    inputs.send(
-        geometries, 'my-secret-key', key='goo', label='Preview',
-        defaultChecked=True
-    )
+    col1, col2 = st.columns(2)
 
-    with st.sidebar:
+    with col1:
+        inputs.send(
+            data=geometries,
+            unique_id=str(uuid.uuid4()),
+            default_checked=True,
+            key='sunpath',
+            label='Preview',
+        )
+
+    with col2:
         # add bake button to side bar
-        button.send('BakeGeometry',
-            geometries, 'my-secret-key-2', 
+        button.send(
+            action='BakeGeometry',
+            data=geometries,
+            unique_id=str(uuid.uuid4()),
             options={
-                "layer":"Sunpath",
+                "layer": "Sunpath",
                 "units": "Meters"},
-            key='my-secret-key'
+            key='bake-sunpath'
         )

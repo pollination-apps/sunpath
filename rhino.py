@@ -84,7 +84,7 @@ def add_rhino_controls(sunpath: Sunpath, radius: int, north_angle: float):
     with col1:
         inputs.send(
             data=geometries,
-            unique_id=str(uuid.uuid4()),
+            unique_id='preview-sunpath',
             default_checked=True,
             key='sunpath',
             label='Preview',
@@ -95,7 +95,7 @@ def add_rhino_controls(sunpath: Sunpath, radius: int, north_angle: float):
         button.send(
             action='BakeGeometry',
             data=geometries,
-            unique_id=str(uuid.uuid4()),
+            unique_id='bake-sunpath',
             options={
                 "layer": "Sunpath",
                 "units": "Meters"},

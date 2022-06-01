@@ -23,6 +23,7 @@ st.sidebar.image(
     use_column_width=True
 )
 
+
 def main(platform):
     st.title('Interactive Sunpath App!')
     epw = None
@@ -67,26 +68,27 @@ def main(platform):
     )
     write_csv = st.sidebar.checkbox('Download CSV', value=False)
 
+    hourly_data = get_data(selection, epw_fields(), epw)
+
     # add Rhino controls
     if platform == 'rhino':
         add_rhino_controls(sunpath, radius, north_angle)
 
-    # viewer
-    hourly_data = get_data(selection, epw_fields(), epw)
-
-    sunpath_vtkjs = pathlib.Path(
-        './data',
-        f'{sunpath.latitude}_{sunpath.longitude}_{sunpath.north_angle}_{"".join(selection)}.vtkjs'
-    )
-    if not sunpath_vtkjs.is_file():
-        # The most reliable way to use cache in this scenario is to check the file
-        sunpath_vtkjs = get_sunpath_vtkjs(
-            sunpath, file_path=sunpath_vtkjs, data=hourly_data
+    else:
+        # viewer
+        sunpath_vtkjs = pathlib.Path(
+            './data',
+            f'{sunpath.latitude}_{sunpath.longitude}_{sunpath.north_angle}_{"".join(selection)}.vtkjs'
         )
+        if not sunpath_vtkjs.is_file():
+            # The most reliable way to use cache in this scenario is to check the file
+            sunpath_vtkjs = get_sunpath_vtkjs(
+                sunpath, file_path=sunpath_vtkjs, data=hourly_data
+            )
 
-    st_vtkjs(
-        content=sunpath_vtkjs.read_bytes(), toolbar=True, key='viewer', subscribe=False
-    )
+        st_vtkjs(
+            content=sunpath_vtkjs.read_bytes(), toolbar=True, key='viewer', subscribe=False
+        )
 
     if write_csv:
         if epw:

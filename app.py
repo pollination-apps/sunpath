@@ -10,6 +10,7 @@ from pollination_streamlit_io import special
 
 from helper import get_sunpath_vtkjs, sunpath_by_location, sunpath_by_lat_long, write_csv_file, get_data, epw_fields
 from rhino import add_rhino_controls
+from sketchup import add_sketchup_controls
 
 
 st.set_page_config(
@@ -73,6 +74,8 @@ def main(platform):
     # add Rhino controls
     if platform == 'rhino':
         add_rhino_controls(sunpath, radius, north_angle)
+    elif platform == 'sketchup':
+        add_sketchup_controls(sunpath, radius, north_angle)
 
     else:
         # viewer
